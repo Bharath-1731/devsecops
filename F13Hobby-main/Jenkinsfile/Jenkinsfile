@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/your-username/your-repo.git'
+            }
+        }
+        stage('Build Package') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+        // stage('Store in Nexus') {
+        //     steps {
+        //         sh 'vn deploy'
+        //     }
+        // }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t your-dockerhub-username/your-image-name.'
+            }
+        }
+        stage('Store in Docker Hub') {
+            steps {
+                sh 'docker push your-dockerhub-username/your-image-name'
+            }
+        }
+        stage('Host in Tomcat') {
+            steps {
+                sh 'docker run -p 8080:8080 your-dockerhub-username/your-image-name'
+            }
+        }
+    }
+}
